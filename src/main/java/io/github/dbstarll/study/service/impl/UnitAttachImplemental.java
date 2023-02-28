@@ -5,6 +5,9 @@ import com.mongodb.client.MongoIterable;
 import com.mongodb.client.result.DeleteResult;
 import io.github.dbstarll.dubai.model.collection.Collection;
 import io.github.dbstarll.dubai.model.service.Aggregator;
+import io.github.dbstarll.dubai.model.service.validate.Validate;
+import io.github.dbstarll.dubai.model.service.validation.GeneralValidation;
+import io.github.dbstarll.dubai.model.service.validation.Validation;
 import io.github.dbstarll.study.entity.StudyEntities;
 import io.github.dbstarll.study.entity.Unit;
 import io.github.dbstarll.study.entity.join.UnitBase;
@@ -76,5 +79,26 @@ public final class UnitAttachImplemental<E extends StudyEntities & UnitBase, S e
                 .build()
                 .aggregateOne(DEFAULT_CONTEXT)
                 .map(e -> EntryWrapper.wrap(e.getKey(), (Unit) e.getValue().get(Unit.class)));
+    }
+
+    /**
+     * 单元ID校验.
+     *
+     * @return finalUnitIdValidation
+     */
+    @GeneralValidation
+    public Validation<E> finalUnitIdValidation() {
+        return new AbstractEntityValidation() {
+            @Override
+            public void validate(final E entity, final E original, final Validate validate) {
+                if (entity.getUnitId() == null) {
+                    validate.addFieldError(UnitBase.FIELD_NAME_UNIT_ID, "单元未设置");
+                } else if (original != null && !entity.getUnitId().equals(original.getUnitId())) {
+                    validate.addFieldError(UnitBase.FIELD_NAME_UNIT_ID, "单元不可更改");
+                } else if (!unitService.contains(entity.getUnitId())) {
+                    validate.addFieldError(UnitBase.FIELD_NAME_UNIT_ID, "单元不存在");
+                }
+            }
+        };
     }
 }
