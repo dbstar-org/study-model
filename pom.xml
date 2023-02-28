@@ -25,6 +25,7 @@
   <properties>
     <project.git.project>study-model</project.git.project>
     <!-- module version -->
+    <version.dubai-model>${project.parent.version}</version.dubai-model>
     <version.dubai-model-user>1.0.3</version.dubai-model-user>
   </properties>
 
@@ -37,6 +38,30 @@
   </dependencies>
 
   <profiles>
+    <profile>
+      <id>java-test</id>
+      <activation>
+        <file>
+          <exists>src/test/java</exists>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>io.github.dbstarll.dubai</groupId>
+          <artifactId>dubai-model-collection</artifactId>
+          <version>${version.dubai-model}</version>
+          <classifier>tests</classifier>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>io.github.dbstarll.dubai</groupId>
+          <artifactId>dubai-model-service</artifactId>
+          <version>${version.dubai-model}</version>
+          <classifier>tests</classifier>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
     <profile>
       <id>site-local</id>
       <distributionManagement>
