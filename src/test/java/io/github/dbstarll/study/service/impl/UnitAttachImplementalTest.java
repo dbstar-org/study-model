@@ -35,6 +35,7 @@ class UnitAttachImplementalTest extends ServiceTestCase {
     private void useServiceAutowirer(final BiConsumer<Unit, TestUnitService> consumer) {
         useService(UnitService.class, us -> {
             final Unit unit = EntityFactory.newInstance(Unit.class);
+            unit.setBookId(new ObjectId());
             assertSame(unit, us.save(unit, null));
 
             useService(serviceClass, new ImplementalAutowirer() {

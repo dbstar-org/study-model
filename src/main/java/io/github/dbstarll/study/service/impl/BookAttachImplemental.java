@@ -7,6 +7,9 @@ import io.github.dbstarll.dubai.model.collection.Collection;
 import io.github.dbstarll.dubai.model.entity.Entity;
 import io.github.dbstarll.dubai.model.service.Aggregator;
 import io.github.dbstarll.dubai.model.service.Service;
+import io.github.dbstarll.dubai.model.service.validate.Validate;
+import io.github.dbstarll.dubai.model.service.validation.GeneralValidation;
+import io.github.dbstarll.dubai.model.service.validation.Validation;
 import io.github.dbstarll.study.entity.StudyEntities;
 import io.github.dbstarll.study.entity.join.BookBase;
 import io.github.dbstarll.study.service.StudyServices;
@@ -61,5 +64,24 @@ public final class BookAttachImplemental<E extends StudyEntities & BookBase, S e
                 .build()
                 .aggregateOne(DEFAULT_CONTEXT)
                 .map(e -> EntryWrapper.wrap(e.getKey(), (E1) e.getValue().get(bookService.getEntityClass())));
+    }
+
+    /**
+     * 单词本/课本校验.
+     *
+     * @return finalBookIdValidation
+     */
+    @GeneralValidation
+    public Validation<E> finalBookIdValidation() {
+        return new AbstractEntityValidation() {
+            @Override
+            public void validate(final E entity, final E original, final Validate validate) {
+                if (entity.getBookId() == null) {
+                    validate.addFieldError(BookBase.FIELD_NAME_BOOK_ID, "单词本/课本未设置");
+                } else if (original != null && !entity.getBookId().equals(original.getBookId())) {
+                    validate.addFieldError(BookBase.FIELD_NAME_BOOK_ID, "单词本/课本不可更改");
+                }
+            }
+        };
     }
 }

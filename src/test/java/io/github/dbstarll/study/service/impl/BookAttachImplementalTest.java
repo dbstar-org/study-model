@@ -3,6 +3,8 @@ package io.github.dbstarll.study.service.impl;
 import com.mongodb.client.model.Filters;
 import io.github.dbstarll.dubai.model.entity.EntityFactory;
 import io.github.dbstarll.dubai.model.service.ServiceTestCase;
+import io.github.dbstarll.dubai.model.service.validate.DefaultValidate;
+import io.github.dbstarll.dubai.model.service.validate.Validate;
 import io.github.dbstarll.study.entity.Book;
 import io.github.dbstarll.study.entity.TestBookEntity;
 import io.github.dbstarll.study.entity.join.BookBase;
@@ -12,12 +14,15 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.Map.Entry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookAttachImplementalTest extends ServiceTestCase {
     private static final Class<TestBookEntity> entityClass = TestBookEntity.class;
@@ -99,5 +104,38 @@ class BookAttachImplementalTest extends ServiceTestCase {
             assertEquals(entity2, match2.getKey());
             assertEquals(book, match2.getValue());
         }));
+    }
+
+    @Test
+    void bookIdValidationNotSet() {
+        useService(serviceClass, s -> {
+            final TestBookEntity entity = EntityFactory.newInstance(entityClass);
+            final Validate validate = new DefaultValidate();
+            assertNull(s.save(entity, validate));
+            assertTrue(validate.hasErrors());
+            assertTrue(validate.hasFieldErrors());
+            assertEquals(Collections.singletonList("单词本/课本未设置"), validate.getFieldErrors()
+                    .get(BookBase.FIELD_NAME_BOOK_ID));
+        });
+    }
+
+    @Test
+    void bookIdValidationChange() {
+        useService(serviceClass, s -> {
+            final TestBookEntity entity = EntityFactory.newInstance(entityClass);
+            entity.setBookId(new ObjectId());
+            assertSame(entity, s.save(entity, null));
+
+            final Validate validate = new DefaultValidate();
+            assertNull(s.save(entity, validate));
+            assertFalse(validate.hasErrors());
+
+            entity.setBookId(new ObjectId());
+            assertNull(s.save(entity, validate));
+            assertTrue(validate.hasErrors());
+            assertTrue(validate.hasFieldErrors());
+            assertEquals(Collections.singletonList("单词本/课本不可更改"), validate.getFieldErrors()
+                    .get(BookBase.FIELD_NAME_BOOK_ID));
+        });
     }
 }
