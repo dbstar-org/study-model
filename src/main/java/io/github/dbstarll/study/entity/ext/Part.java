@@ -8,6 +8,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.List;
 import java.util.StringJoiner;
 
+import static org.apache.commons.lang3.Validate.noNullElements;
+
 /**
  * 词性词类释义.
  */
@@ -31,8 +33,8 @@ public final class Part implements Base {
      * @param means 释义的列表
      */
     public Part(final List<PartKey> key, final List<String> means) {
-        this.key = key;
-        this.means = means;
+        setKey(key);
+        setMeans(means);
     }
 
     /**
@@ -50,7 +52,7 @@ public final class Part implements Base {
      * @param key PartKey的列表
      */
     public void setKey(final List<PartKey> key) {
-        this.key = key;
+        this.key = noNullElements(key, "key contains null element at index: %d");
     }
 
     /**
@@ -68,7 +70,7 @@ public final class Part implements Base {
      * @param means 释义的列表
      */
     public void setMeans(final List<String> means) {
-        this.means = means;
+        this.means = noNullElements(means, "means contains null element at index: %d");
     }
 
     @Override

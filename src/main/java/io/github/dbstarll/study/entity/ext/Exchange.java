@@ -7,6 +7,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.StringJoiner;
 
+import static org.apache.commons.lang3.Validate.notBlank;
+import static org.apache.commons.lang3.Validate.notNull;
+
 /**
  * 词态变化.
  */
@@ -32,9 +35,9 @@ public final class Exchange implements Base {
      * @param classify 词态变化的分类
      */
     public Exchange(final ExchangeKey key, final String word, final String classify) {
-        this.key = key;
-        this.word = word;
-        this.classify = classify;
+        setKey(key);
+        setWord(word);
+        setClassify(classify);
     }
 
     /**
@@ -52,7 +55,7 @@ public final class Exchange implements Base {
      * @param key 词态变化类型
      */
     public void setKey(final ExchangeKey key) {
-        this.key = key;
+        this.key = notNull(key, "key is null");
     }
 
     /**
@@ -70,11 +73,11 @@ public final class Exchange implements Base {
      * @param word 词态变化后的词
      */
     public void setWord(final String word) {
-        this.word = word;
+        this.word = notBlank(word, "word is blank");
     }
 
     /**
-     * 获得词态变化的分类.
+     * 获得词态变化的分类，null表示标准词态变化.
      *
      * @return 词态变化的分类
      */
@@ -83,7 +86,7 @@ public final class Exchange implements Base {
     }
 
     /**
-     * 设置词态变化的分类.
+     * 设置词态变化的分类，null表示标准词态变化.
      *
      * @param classify 词态变化的分类
      */

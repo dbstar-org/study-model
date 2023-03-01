@@ -8,6 +8,9 @@ import org.bson.types.ObjectId;
 
 import java.util.StringJoiner;
 
+import static org.apache.commons.lang3.Validate.notBlank;
+import static org.apache.commons.lang3.Validate.notNull;
+
 /**
  * 语系语音.
  */
@@ -33,8 +36,8 @@ public final class Phonetic implements Voiceable {
      * @param symbol 音标
      */
     public Phonetic(final PhoneticKey key, final String symbol) {
-        this.key = key;
-        this.symbol = symbol;
+        setKey(key);
+        setSymbol(symbol);
     }
 
     /**
@@ -52,7 +55,7 @@ public final class Phonetic implements Voiceable {
      * @param key 语音语系
      */
     public void setKey(final PhoneticKey key) {
-        this.key = key;
+        this.key = notNull(key, "key is null");
     }
 
     /**
@@ -70,7 +73,7 @@ public final class Phonetic implements Voiceable {
      * @param symbol 音标
      */
     public void setSymbol(final String symbol) {
-        this.symbol = symbol;
+        this.symbol = notBlank(symbol, "symbol is blank");
     }
 
     @Override
@@ -80,7 +83,7 @@ public final class Phonetic implements Voiceable {
 
     @Override
     public void setVoiceId(final ObjectId voiceId) {
-        this.voiceId = voiceId;
+        this.voiceId = notNull(voiceId, "voiceId is null");
     }
 
     /**
@@ -99,7 +102,7 @@ public final class Phonetic implements Voiceable {
      * @return Phonetic实例.
      */
     public Phonetic mp3(final byte[] data) {
-        this.mp3 = data;
+        this.mp3 = notNull(data, "mp3 data is null");
         return this;
     }
 
@@ -133,7 +136,7 @@ public final class Phonetic implements Voiceable {
                 .add("key=" + key)
                 .add("symbol='" + symbol + "'")
                 .add("voiceId=" + voiceId)
-                .add("mp3=" + (mp3 == null ? 0 : mp3.length))
+                .add("mp3=" + (mp3() == null ? 0 : mp3().length))
                 .toString();
     }
 }
