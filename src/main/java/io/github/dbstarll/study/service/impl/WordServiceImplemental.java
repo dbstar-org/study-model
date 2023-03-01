@@ -19,6 +19,7 @@ import io.github.dbstarll.study.service.WordService;
 import io.github.dbstarll.study.service.attach.WordServiceAttach;
 import io.github.dbstarll.utils.lang.wrapper.IterableWrapper;
 import io.github.dbstarll.utils.lang.wrapper.IteratorWrapper;
+import org.apache.commons.collections.CollectionUtils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -118,8 +119,7 @@ public final class WordServiceImplemental extends StudyImplementals<Word, WordSe
                 getCollection().aggregate(pipeline, WordWithJoin.class).iterator()) {
             @Override
             protected WordWithJoin next(final WordWithJoin entity) {
-                final List<Document> exercises = entity.getJoins();
-                entity.setJoin(exercises != null && !exercises.isEmpty());
+                entity.setJoin(!CollectionUtils.isEmpty(entity.getJoins()));
                 entity.setJoins(null);
                 return entity;
             }
@@ -146,24 +146,29 @@ public final class WordServiceImplemental extends StudyImplementals<Word, WordSe
         @Override
         public void validate(final Word entity, final Word original, final Validate validate) {
             final Set<Phonetic> phonetics = entity.getPhonetics();
-            if (phonetics != null) {
+            if (!CollectionUtils.isEmpty(phonetics)) {
                 final ObjectId wordId = entity.getId() == null ? newWordId : entity.getId();
+                phonetics.forEach(phonetic -> validate(wordId, phonetic, validate));
+            }
+        }
 
-                for (Phonetic phonetic : phonetics) {
-                    if (phonetic.getVoiceId() == null && phonetic.mp3() != null) {
-                        if (wordId == null) {
-                            validate.addFieldError(Entity.FIELD_NAME_ID, "保存音标语音时，wordId必须外部设置");
-                        } else {
-                            final Voice voice = EntityFactory.newInstance(Voice.class);
-                            voice.setContent(phonetic.mp3());
-                            voice.setContentType("audio/mpeg");
-                            voice.setSources(Collections.singletonMap("wordId", wordId));
-                            if (null != voiceService.save(voice, validate)) {
-                                phonetic.setVoiceId(voice.getId());
-                            }
-                        }
-                    }
+        private void validate(final ObjectId wordId, final Phonetic phonetic, final Validate validate) {
+            if (phonetic.getVoiceId() == null && phonetic.mp3() != null) {
+                if (wordId == null) {
+                    validate.addFieldError(Entity.FIELD_NAME_ID, "保存音标语音时，wordId必须外部设置");
+                } else if (!validate.hasErrors()) {
+                    saveVoice(wordId, phonetic, validate);
                 }
+            }
+        }
+
+        private void saveVoice(final ObjectId wordId, final Phonetic phonetic, final Validate validate) {
+            final Voice voice = EntityFactory.newInstance(Voice.class);
+            voice.setContent(phonetic.mp3());
+            voice.setContentType("audio/mpeg");
+            voice.setSources(Collections.singletonMap("wordId", wordId));
+            if (null != voiceService.save(voice, validate)) {
+                phonetic.setVoiceId(voice.getId());
             }
         }
     }
