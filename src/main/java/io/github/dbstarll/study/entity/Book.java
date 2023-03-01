@@ -1,13 +1,14 @@
 package io.github.dbstarll.study.entity;
 
 import io.github.dbstarll.dubai.model.entity.Table;
+import io.github.dbstarll.dubai.model.entity.func.Cacheable;
 import io.github.dbstarll.dubai.model.entity.info.Namable;
 import io.github.dbstarll.study.entity.enums.CefrLevel;
 import io.github.dbstarll.study.entity.enums.SchoolLevel;
 import io.github.dbstarll.study.entity.enums.Term;
 
 @Table
-public interface Book extends StudyEntities, Namable {
+public interface Book extends StudyEntities, Cacheable, Namable {
     /**
      * 获取欧洲语言共同参考标准等级.
      *

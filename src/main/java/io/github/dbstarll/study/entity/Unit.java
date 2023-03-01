@@ -1,10 +1,11 @@
 package io.github.dbstarll.study.entity;
 
 import io.github.dbstarll.dubai.model.entity.Table;
+import io.github.dbstarll.dubai.model.entity.func.Cacheable;
 import io.github.dbstarll.study.entity.join.BookBase;
 
 @Table
-public interface Unit extends StudyEntities, BookBase {
+public interface Unit extends StudyEntities, Cacheable, BookBase {
     /**
      * 获得单元的序号.
      *
