@@ -14,10 +14,10 @@ class PhoneticTest {
     @Test
     void testEquals() {
         final ObjectId voiceId = new ObjectId();
-        final Phonetic phonetic = new Phonetic(PhoneticKey.am, "am");
+        final Phonetic phonetic = new Phonetic(PhoneticKey.AM, "am");
         phonetic.setVoiceId(voiceId);
         final Phonetic phonetic2 = new Phonetic();
-        phonetic2.setKey(PhoneticKey.am);
+        phonetic2.setKey(PhoneticKey.AM);
         phonetic2.setSymbol("am");
         phonetic2.setVoiceId(voiceId);
 
@@ -27,9 +27,9 @@ class PhoneticTest {
 
     @Test
     void testHashCode() {
-        final Phonetic phonetic = new Phonetic(PhoneticKey.am, "am");
+        final Phonetic phonetic = new Phonetic(PhoneticKey.AM, "am");
         final Phonetic phonetic2 = new Phonetic();
-        phonetic2.setKey(PhoneticKey.am);
+        phonetic2.setKey(PhoneticKey.AM);
         phonetic2.setSymbol("am");
 
         assertEquals(phonetic.hashCode(), phonetic2.hashCode());
@@ -38,9 +38,9 @@ class PhoneticTest {
     @Test
     void testToString() {
         final byte[] mp3 = "mp3".getBytes(StandardCharsets.UTF_8);
-        final Phonetic phonetic = new Phonetic(PhoneticKey.am, "am");
+        final Phonetic phonetic = new Phonetic(PhoneticKey.AM, "am");
         final Phonetic phonetic2 = new Phonetic();
-        phonetic2.setKey(PhoneticKey.am);
+        phonetic2.setKey(PhoneticKey.AM);
         phonetic2.setSymbol("am");
 
         assertEquals("Phonetic[key=am, symbol='am', voiceId=null, mp3=0]", phonetic.toString());
