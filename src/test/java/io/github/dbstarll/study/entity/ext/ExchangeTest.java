@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ExchangeTest {
     @Test
     void testEquals() {
-        final Exchange exchange = new Exchange(ExchangeKey.done, "done", null);
+        final Exchange exchange = new Exchange(ExchangeKey.DONE, "done", null);
         final Exchange exchange2 = new Exchange();
-        exchange2.setKey(ExchangeKey.done);
+        exchange2.setKey(ExchangeKey.DONE);
         exchange2.setWord("done");
 
         assertTrue(Stream.of(null, "null").noneMatch(exchange::equals));
@@ -22,9 +22,9 @@ class ExchangeTest {
 
     @Test
     void testHashCode() {
-        final Exchange exchange = new Exchange(ExchangeKey.done, "done", null);
+        final Exchange exchange = new Exchange(ExchangeKey.DONE, "done", null);
         final Exchange exchange2 = new Exchange();
-        exchange2.setKey(ExchangeKey.done);
+        exchange2.setKey(ExchangeKey.DONE);
         exchange2.setWord("done");
 
         assertEquals(exchange.hashCode(), exchange2.hashCode());
@@ -32,9 +32,9 @@ class ExchangeTest {
 
     @Test
     void testToString() {
-        final Exchange exchange = new Exchange(ExchangeKey.done, "done", null);
+        final Exchange exchange = new Exchange(ExchangeKey.DONE, "done", null);
         final Exchange exchange2 = new Exchange();
-        exchange2.setKey(ExchangeKey.done);
+        exchange2.setKey(ExchangeKey.DONE);
         exchange2.setWord("done");
 
         assertEquals("Exchange[key=done, word='done', classify='null']", exchange.toString());

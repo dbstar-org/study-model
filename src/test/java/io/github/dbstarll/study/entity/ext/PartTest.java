@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PartTest {
     @Test
     void testEquals() {
-        final Part part = new Part(Collections.singletonList(PartKey.adj), Collections.singletonList("adj"));
+        final Part part = new Part(Collections.singletonList(PartKey.ADJ), Collections.singletonList("adj"));
         final Part part2 = new Part();
-        part2.setKey(Collections.singletonList(PartKey.adj));
+        part2.setKey(Collections.singletonList(PartKey.ADJ));
         part2.setMeans(Collections.singletonList("adj"));
 
         assertTrue(Stream.of(null, "null").noneMatch(part::equals));
@@ -23,9 +23,9 @@ class PartTest {
 
     @Test
     void testHashCode() {
-        final Part part = new Part(Collections.singletonList(PartKey.adj), Collections.singletonList("adj"));
+        final Part part = new Part(Collections.singletonList(PartKey.ADJ), Collections.singletonList("adj"));
         final Part part2 = new Part();
-        part2.setKey(Collections.singletonList(PartKey.adj));
+        part2.setKey(Collections.singletonList(PartKey.ADJ));
         part2.setMeans(Collections.singletonList("adj"));
 
         assertEquals(part.hashCode(), part2.hashCode());
@@ -33,9 +33,9 @@ class PartTest {
 
     @Test
     void testToString() {
-        final Part part = new Part(Collections.singletonList(PartKey.adj), Collections.singletonList("adj"));
+        final Part part = new Part(Collections.singletonList(PartKey.ADJ), Collections.singletonList("adj"));
         final Part part2 = new Part();
-        part2.setKey(Collections.singletonList(PartKey.adj));
+        part2.setKey(Collections.singletonList(PartKey.ADJ));
         part2.setMeans(Collections.singletonList("adj"));
 
         assertEquals("Part[key=[adj], means=[adj]]", part.toString());

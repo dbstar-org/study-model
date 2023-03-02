@@ -91,13 +91,13 @@ class WordServiceImplementalTest extends ServiceTestCase {
             final Word wordDo = EntityFactory.newInstance(entityClass);
             wordDo.setName("do");
             wordDo.setCri(true);
-            wordDo.setExchanges(Collections.singleton(new Exchange(ExchangeKey.done, "done", null)));
+            wordDo.setExchanges(Collections.singleton(new Exchange(ExchangeKey.DONE, "done", null)));
             assertSame(wordDo, wordService.save(wordDo, null));
 
             final Word wordMake = EntityFactory.newInstance(entityClass);
             wordMake.setName("done");
             wordMake.setCri(true);
-            wordMake.setExchanges(Collections.singleton(new Exchange(ExchangeKey.past, "did", null)));
+            wordMake.setExchanges(Collections.singleton(new Exchange(ExchangeKey.PAST, "did", null)));
             assertSame(wordMake, wordService.save(wordMake, null));
 
             final List<Word> list1 = wordService.find(wordService.filterByWord("do", false, false)).into(new ArrayList<>());
@@ -156,7 +156,7 @@ class WordServiceImplementalTest extends ServiceTestCase {
             final Word word = EntityFactory.newInstance(entityClass);
             word.setName("word");
             word.setCri(true);
-            word.setPhonetics(Collections.singleton(new Phonetic(PhoneticKey.am, "word").mp3(mp3)));
+            word.setPhonetics(Collections.singleton(new Phonetic(PhoneticKey.AM, "word").mp3(mp3)));
             final Validate validate = new DefaultValidate();
             assertNull(wordService.save(word, validate));
             assertTrue(validate.hasErrors());
@@ -170,7 +170,7 @@ class WordServiceImplementalTest extends ServiceTestCase {
     void voiceSaverValidationOnNewId() {
         useServiceAutowirer((voiceService, wordService) -> {
             final byte[] mp3 = "mp3".getBytes(StandardCharsets.UTF_8);
-            final Phonetic phonetic = new Phonetic(PhoneticKey.am, "word").mp3(mp3);
+            final Phonetic phonetic = new Phonetic(PhoneticKey.AM, "word").mp3(mp3);
 
             final Word word = EntityFactory.newInstance(entityClass);
             word.setName("word");
@@ -195,7 +195,7 @@ class WordServiceImplementalTest extends ServiceTestCase {
     void voiceSaverValidationOnUpdate() {
         useServiceAutowirer((voiceService, wordService) -> {
             final byte[] mp3 = "mp3".getBytes(StandardCharsets.UTF_8);
-            final Phonetic phonetic = new Phonetic(PhoneticKey.am, "word");
+            final Phonetic phonetic = new Phonetic(PhoneticKey.AM, "word");
 
             final Word word = EntityFactory.newInstance(entityClass);
             word.setName("word");
@@ -222,8 +222,8 @@ class WordServiceImplementalTest extends ServiceTestCase {
     @Test
     void voiceSaverValidationNoContent() {
         useServiceAutowirer((voiceService, wordService) -> {
-            final Phonetic p1 = new Phonetic(PhoneticKey.am, "word").mp3(new byte[0]);
-            final Phonetic p2 = new Phonetic(PhoneticKey.en, "word").mp3(new byte[0]);
+            final Phonetic p1 = new Phonetic(PhoneticKey.AM, "word").mp3(new byte[0]);
+            final Phonetic p2 = new Phonetic(PhoneticKey.EN, "word").mp3(new byte[0]);
 
             final Word word = EntityFactory.newInstance(entityClass);
             word.setName("word");
