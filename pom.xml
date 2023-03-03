@@ -26,7 +26,7 @@
     <project.git.project>study-model</project.git.project>
     <!-- module version -->
     <version.dubai-model>${project.parent.version}</version.dubai-model>
-    <version.dubai-model-user>1.0.3</version.dubai-model-user>
+    <version.dubai-model-user>1.0.4-SNAPSHOT</version.dubai-model-user>
   </properties>
 
   <dependencies>

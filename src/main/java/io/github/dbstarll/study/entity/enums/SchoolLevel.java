@@ -1,6 +1,6 @@
 package io.github.dbstarll.study.entity.enums;
 
-import io.github.dbstarll.dubai.model.entity.EnumValue;
+import io.github.dbstarll.utils.lang.enums.EnumValue;
 
 /**
  * 学历等级(小学/初中/高中等等).

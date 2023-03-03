@@ -7,6 +7,8 @@ import io.github.dbstarll.dubai.model.service.validate.DefaultValidate;
 import io.github.dbstarll.dubai.model.service.validate.Validate;
 import io.github.dbstarll.study.entity.Book;
 import io.github.dbstarll.study.entity.TestBookEntity;
+import io.github.dbstarll.study.entity.enums.SchoolLevel;
+import io.github.dbstarll.study.entity.enums.Term;
 import io.github.dbstarll.study.entity.join.BookBase;
 import io.github.dbstarll.study.service.BookService;
 import io.github.dbstarll.study.service.TestBookService;
@@ -84,6 +86,8 @@ class BookAttachImplementalTest extends ServiceTestCase {
 
             final Book book = EntityFactory.newInstance(Book.class);
             book.setName("测试");
+            book.setTerm(Term.FIRST);
+            book.setSchool(SchoolLevel.B_MIDDLE);
             assertNotNull(bookService.save(book, null));
 
             final TestBookEntity entity = EntityFactory.newInstance(entityClass);
