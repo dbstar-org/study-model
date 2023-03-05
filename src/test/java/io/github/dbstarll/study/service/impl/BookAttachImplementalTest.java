@@ -10,6 +10,8 @@ import io.github.dbstarll.dubai.model.service.validate.DefaultValidate;
 import io.github.dbstarll.dubai.model.service.validate.Validate;
 import io.github.dbstarll.study.entity.Book;
 import io.github.dbstarll.study.entity.TestBookEntity;
+import io.github.dbstarll.study.entity.enums.SchoolLevel;
+import io.github.dbstarll.study.entity.enums.Term;
 import io.github.dbstarll.study.entity.join.BookBase;
 import io.github.dbstarll.study.service.BookService;
 import io.github.dbstarll.study.service.TestBookService;
@@ -41,6 +43,8 @@ class BookAttachImplementalTest extends ServiceTestCase {
         useService(BookService.class, bookService -> {
             final Book book = EntityFactory.newInstance(Book.class);
             book.setName("课本");
+            book.setSchool(SchoolLevel.B_MIDDLE);
+            book.setTerm(Term.FIRST);
             assertSame(book, bookService.save(book, null));
 
             useService(serviceClass, new ImplementalAutowirer() {

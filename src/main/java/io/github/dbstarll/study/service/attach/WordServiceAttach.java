@@ -17,7 +17,7 @@ public interface WordServiceAttach extends StudyAttachs, ServiceSaver<Word> {
      * 根据提供的内容进行查询.
      *
      * @param word          匹配的内容
-     * @param matchExchange 是否匹配词类转换
+     * @param matchExchange 是否匹配词态变化
      * @param fuzzyMatching 是否模糊匹配
      * @return 过滤条件
      */

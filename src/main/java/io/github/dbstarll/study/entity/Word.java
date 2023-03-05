@@ -13,7 +13,7 @@ import java.util.Set;
 @Table
 public interface Word extends StudyEntities, Cacheable, Namable, WordBase {
     /**
-     * 返回是否基础词汇；true=基础词汇；false=词类转换后的衍生词.
+     * 返回是否基础词汇；true=基础词汇；false=词态变化后的衍生词.
      *
      * @return 是否是基础词汇
      */
@@ -41,16 +41,16 @@ public interface Word extends StudyEntities, Cacheable, Namable, WordBase {
     void setPhonetics(Set<Phonetic> phonetics);
 
     /**
-     * 获得词类转换列表.
+     * 获得词态变化列表.
      *
-     * @return 词类转换列表
+     * @return 词态变化列表
      */
     Set<Exchange> getExchanges();
 
     /**
-     * 设置词类转换列表.
+     * 设置词态变化列表.
      *
-     * @param exchanges 词类转换列表
+     * @param exchanges 词态变化列表
      */
     void setExchanges(Set<Exchange> exchanges);
 
