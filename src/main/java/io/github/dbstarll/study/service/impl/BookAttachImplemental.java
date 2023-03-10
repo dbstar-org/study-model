@@ -95,7 +95,7 @@ public final class BookAttachImplemental<E extends StudyEntities & BookBase, S e
                     validate.addFieldError(BookBase.FIELD_NAME_BOOK_ID, "课本未设置");
                 } else if (original != null && !entity.getBookId().equals(original.getBookId())) {
                     validate.addFieldError(BookBase.FIELD_NAME_BOOK_ID, "课本不可更改");
-                } else if (!bookService.contains(entity.getBookId())) {
+                } else if (!getEntity(entity.getBookId(), bookService).isPresent()) {
                     validate.addFieldError(BookBase.FIELD_NAME_BOOK_ID, "课本不存在");
                 }
             }

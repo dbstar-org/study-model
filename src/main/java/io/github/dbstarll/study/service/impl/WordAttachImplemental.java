@@ -20,6 +20,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import static com.mongodb.client.model.Filters.eq;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -97,14 +98,22 @@ public final class WordAttachImplemental<E extends StudyEntities & WordBase, S e
         return new AbstractEntityValidation() {
             @Override
             public void validate(final E entity, final E original, final Validate validate) {
-                if (entity.getWordId() == null) {
+                if (original != null) {
+                    if (!Objects.equals(entity.getWordId(), original.getWordId())) {
+                        validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词不可更改");
+                    }
+                } else if (entity.getWordId() == null) {
                     if (!(entity instanceof Word) || !((Word) entity).isCri()) {
                         validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词未设置");
                     }
-                } else if (original != null && !entity.getWordId().equals(original.getWordId())) {
-                    validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词不可更改");
-                } else if (!wordService.contains(entity.getWordId())) {
+                } else if (!getEntity(entity.getWordId(), wordService).isPresent()) {
                     validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词不存在");
+                } else {
+                    getEntity(entity.getWordId(), wordService).ifPresent(word -> {
+                        if (!word.isCri()) {
+                            validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "这是一个派生词，请添加原型词");
+                        }
+                    });
                 }
             }
         };

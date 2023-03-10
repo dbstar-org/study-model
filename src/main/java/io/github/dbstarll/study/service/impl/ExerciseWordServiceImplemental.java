@@ -118,16 +118,11 @@ public final class ExerciseWordServiceImplemental extends StudyImplementals<Exer
                     if (!Objects.equals(entity.getExchanges(), original.getExchanges())) {
                         validate.addFieldError(ExerciseWord.FIELD_NAME_EXCHANGES, "单词设置后不得修改");
                     }
-                } else if (entity.getWordId() != null) {
-                    final Word word = wordService.findById(entity.getWordId());
-                    if (word != null) {
+                } else {
+                    getEntity(entity.getWordId(), wordService).ifPresent(word -> {
                         entity.setName(word.getName());
-                        if (!word.isCri()) {
-                            validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "这是一个派生词，请添加原型词");
-                        } else {
-                            entity.setExchanges(exchanges(word));
-                        }
-                    }
+                        entity.setExchanges(exchanges(word));
+                    });
                 }
             }
 

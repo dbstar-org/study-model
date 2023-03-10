@@ -95,7 +95,7 @@ public final class UnitAttachImplemental<E extends StudyEntities & UnitBase, S e
                     validate.addFieldError(UnitBase.FIELD_NAME_UNIT_ID, "单元未设置");
                 } else if (original != null && !entity.getUnitId().equals(original.getUnitId())) {
                     validate.addFieldError(UnitBase.FIELD_NAME_UNIT_ID, "单元不可更改");
-                } else if (!unitService.contains(entity.getUnitId())) {
+                } else if (!getEntity(entity.getUnitId(), unitService).isPresent()) {
                     validate.addFieldError(UnitBase.FIELD_NAME_UNIT_ID, "单元不存在");
                 }
             }

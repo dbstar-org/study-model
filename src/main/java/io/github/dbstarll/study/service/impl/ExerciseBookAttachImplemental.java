@@ -95,7 +95,7 @@ public final class ExerciseBookAttachImplemental<E extends StudyEntities & Exerc
                     validate.addFieldError(ExerciseBookBase.FIELD_NAME_EXERCISE_BOOK_ID, "练习册未设置");
                 } else if (original != null && !entity.getBookId().equals(original.getBookId())) {
                     validate.addFieldError(ExerciseBookBase.FIELD_NAME_EXERCISE_BOOK_ID, "练习册不可更改");
-                } else if (!exerciseBookService.contains(entity.getBookId())) {
+                } else if (!getEntity(entity.getBookId(), exerciseBookService).isPresent()) {
                     validate.addFieldError(ExerciseBookBase.FIELD_NAME_EXERCISE_BOOK_ID, "练习册不存在");
                 }
             }
