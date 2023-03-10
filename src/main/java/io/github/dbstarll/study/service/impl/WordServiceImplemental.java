@@ -10,6 +10,7 @@ import io.github.dbstarll.dubai.model.entity.EntityFactory;
 import io.github.dbstarll.dubai.model.entity.Table;
 import io.github.dbstarll.dubai.model.entity.info.Namable;
 import io.github.dbstarll.dubai.model.service.validate.Validate;
+import io.github.dbstarll.dubai.model.service.validation.Validation;
 import io.github.dbstarll.study.entity.Voice;
 import io.github.dbstarll.study.entity.Word;
 import io.github.dbstarll.study.entity.ext.Phonetic;
@@ -77,7 +78,7 @@ public final class WordServiceImplemental extends StudyImplementals<Word, WordSe
 
     @Override
     public Word save(final Word entity, final ObjectId newEntityId, final Validate validate) {
-        return validateAndSave(entity, newEntityId, validate, new VoiceSaverValidation(newEntityId));
+        return validateAndSave(entity, newEntityId, validate, voiceSaverValidation(newEntityId));
     }
 
     @Override
@@ -136,41 +137,37 @@ public final class WordServiceImplemental extends StudyImplementals<Word, WordSe
         return Pattern.compile("^" + word + "$", Pattern.CASE_INSENSITIVE);
     }
 
-    private final class VoiceSaverValidation extends AbstractEntityValidation {
-        private final ObjectId newWordId;
-
-        private VoiceSaverValidation(final ObjectId newWordId) {
-            this.newWordId = newWordId;
-        }
-
-        @Override
-        public void validate(final Word entity, final Word original, final Validate validate) {
-            final Set<Phonetic> phonetics = entity.getPhonetics();
-            if (!CollectionUtils.isEmpty(phonetics)) {
-                final ObjectId wordId = entity.getId() == null ? newWordId : entity.getId();
-                phonetics.forEach(phonetic -> validate(wordId, phonetic, validate));
-            }
-        }
-
-        private void validate(final ObjectId wordId, final Phonetic phonetic, final Validate validate) {
-            if (phonetic.getVoiceId() == null && phonetic.mp3() != null) {
-                if (wordId == null) {
-                    validate.addFieldError(Entity.FIELD_NAME_ID, "保存音标语音时，wordId必须外部设置");
-                } else if (!validate.hasErrors()) {
-                    saveVoice(wordId, phonetic, validate);
+    private Validation<Word> voiceSaverValidation(final ObjectId newWordId) {
+        return new AbstractEntityValidation() {
+            @Override
+            public void validate(final Word entity, final Word original, final Validate validate) {
+                final Set<Phonetic> phonetics = entity.getPhonetics();
+                if (!CollectionUtils.isEmpty(phonetics)) {
+                    final ObjectId wordId = entity.getId() == null ? newWordId : entity.getId();
+                    phonetics.forEach(phonetic -> validate(wordId, phonetic, validate));
                 }
             }
-        }
 
-        private void saveVoice(final ObjectId wordId, final Phonetic phonetic, final Validate validate) {
-            final Voice voice = EntityFactory.newInstance(Voice.class);
-            voice.setContent(phonetic.mp3());
-            voice.setContentType("audio/mpeg");
-            voice.setSources(Collections.singletonMap("wordId", wordId));
-            if (null != voiceService.save(voice, validate)) {
-                phonetic.setVoiceId(voice.getId());
+            private void validate(final ObjectId wordId, final Phonetic phonetic, final Validate validate) {
+                if (phonetic.getVoiceId() == null && phonetic.mp3() != null) {
+                    if (wordId == null) {
+                        validate.addFieldError(Entity.FIELD_NAME_ID, "保存音标语音时，wordId必须外部设置");
+                    } else if (!validate.hasErrors()) {
+                        saveVoice(wordId, phonetic, validate);
+                    }
+                }
             }
-        }
+
+            private void saveVoice(final ObjectId wordId, final Phonetic phonetic, final Validate validate) {
+                final Voice voice = EntityFactory.newInstance(Voice.class);
+                voice.setContent(phonetic.mp3());
+                voice.setContentType("audio/mpeg");
+                voice.setSources(Collections.singletonMap("wordId", wordId));
+                if (null != voiceService.save(voice, validate)) {
+                    phonetic.setVoiceId(voice.getId());
+                }
+            }
+        };
     }
 
     @Table

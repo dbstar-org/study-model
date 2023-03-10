@@ -18,6 +18,7 @@ import io.github.dbstarll.study.service.ExerciseWordService;
 import io.github.dbstarll.study.service.WordService;
 import io.github.dbstarll.study.service.attach.ExerciseWordServiceAttach;
 import io.github.dbstarll.utils.lang.enums.EnumUtils;
+import org.apache.commons.collections.MapUtils;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
@@ -121,23 +122,24 @@ public final class ExerciseWordServiceImplemental extends StudyImplementals<Exer
                 } else {
                     getEntity(entity.getWordId(), wordService).ifPresent(word -> {
                         entity.setName(word.getName());
-                        entity.setExchanges(exchanges(word));
+                        final Map<String, Exchange> exchanges = exchanges(word);
+                        if (!MapUtils.isEmpty(exchanges)) {
+                            entity.setExchanges(exchanges);
+                        }
                     });
                 }
             }
 
             private Map<String, Exchange> exchanges(final Word word) {
+                final Map<String, Exchange> exchanges = new HashMap<>();
                 if (word.getExchanges() != null) {
-                    final Map<String, Exchange> exchanges = new HashMap<>();
                     word.getExchanges().stream()
                             .filter(exchange -> exchange.getWord().indexOf(' ') < 0)
                             .forEach(exchange -> exchanges.put(
                                     EnumUtils.name(exchange.getKey()),
                                     new Exchange(exchange.getWord(), exchange.getClassify())));
-                    return exchanges.isEmpty() ? null : exchanges;
-                } else {
-                    return null;
                 }
+                return exchanges;
             }
         };
     }
