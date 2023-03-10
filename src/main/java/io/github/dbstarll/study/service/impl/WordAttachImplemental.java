@@ -21,6 +21,7 @@ import org.bson.types.ObjectId;
 
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.mongodb.client.model.Filters.eq;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -99,21 +100,28 @@ public final class WordAttachImplemental<E extends StudyEntities & WordBase, S e
             @Override
             public void validate(final E entity, final E original, final Validate validate) {
                 if (original != null) {
-                    if (!Objects.equals(entity.getWordId(), original.getWordId())) {
-                        validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词不可更改");
-                    }
+                    checkChanged(entity, original, validate);
                 } else if (entity.getWordId() == null) {
-                    if (!(entity instanceof Word) || !((Word) entity).isCri()) {
-                        validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词未设置");
-                    }
-                } else if (!getEntity(entity.getWordId(), wordService).isPresent()) {
-                    validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词不存在");
+                    checkWordId(entity, validate);
                 } else {
-                    getEntity(entity.getWordId(), wordService).ifPresent(word -> {
-                        if (!word.isCri()) {
-                            validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "这是一个派生词，请添加原型词");
-                        }
-                    });
+                    final Optional<Word> ow = getEntity(entity.getWordId(), wordService);
+                    if (!ow.isPresent()) {
+                        validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词不存在");
+                    } else if (!ow.get().isCri()) {
+                        validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "这是一个派生词，请添加原型词");
+                    }
+                }
+            }
+
+            private void checkChanged(final E entity, final E original, final Validate validate) {
+                if (!Objects.equals(entity.getWordId(), original.getWordId())) {
+                    validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词不可更改");
+                }
+            }
+
+            private void checkWordId(final E entity, final Validate validate) {
+                if (!(entity instanceof Word) || !((Word) entity).isCri()) {
+                    validate.addFieldError(WordBase.FIELD_NAME_WORD_ID, "单词未设置");
                 }
             }
         };

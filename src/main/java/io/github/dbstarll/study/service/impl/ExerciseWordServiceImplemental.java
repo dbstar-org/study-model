@@ -134,7 +134,7 @@ public final class ExerciseWordServiceImplemental extends StudyImplementals<Exer
                             .forEach(exchange -> exchanges.put(
                                     EnumUtils.name(exchange.getKey()),
                                     new Exchange(exchange.getWord(), exchange.getClassify())));
-                    return exchanges;
+                    return exchanges.isEmpty() ? null : exchanges;
                 } else {
                     return null;
                 }

@@ -28,6 +28,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 public final class ExerciseServiceImplemental extends StudyImplementals<Exercise, ExerciseService>
         implements ExerciseServiceAttach {
+    private static final String SUM_FIELD = "count";
     private WordService wordService;
 
     /**
@@ -65,11 +66,11 @@ public final class ExerciseServiceImplemental extends StudyImplementals<Exercise
                         ? Filters.exists("exchangeKey", false)
                         : Filters.eq("exchangeKey", EnumUtils.name(exercise.getExchangeKey()))
         ));
-        final Bson group = Aggregates.group("$" + Describable.FIELD_NAME_DESCRIPTION, Accumulators.sum("count", 1));
-        final Bson sort = Aggregates.sort(Sorts.descending("count"));
+        final Bson group = Aggregates.group("$" + Describable.FIELD_NAME_DESCRIPTION, Accumulators.sum(SUM_FIELD, 1));
+        final Bson sort = Aggregates.sort(Sorts.descending(SUM_FIELD));
 
         return getCollection().aggregate(Arrays.asList(match, group, sort), Document.class)
-                .map(doc -> EntryWrapper.wrap(doc.getString(Entity.FIELD_NAME_ID), doc.getInteger("count")));
+                .map(doc -> EntryWrapper.wrap(doc.getString(Entity.FIELD_NAME_ID), doc.getInteger(SUM_FIELD)));
     }
 
     /**
