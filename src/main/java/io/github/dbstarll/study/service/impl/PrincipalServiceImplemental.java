@@ -47,10 +47,10 @@ public final class PrincipalServiceImplemental extends StudyImplementals<Princip
     }
 
     @Override
-    public MongoIterable<Entry<Principal, ExerciseBook>> findWithExerciseBook(final Bson filter) {
+    public MongoIterable<Entry<Principal, ExerciseBook>> findWithExerciseBook(final Bson filter, final Module module) {
         return Aggregator.builder(service, getCollection())
                 .match(aggregateMatchFilter(filter))
-                .join(exerciseBookService, Sourceable.FIELD_NAME_SOURCES + '.' + EnumUtils.name(Module.ENGLISH))
+                .join(exerciseBookService, Sourceable.FIELD_NAME_SOURCES + '.' + EnumUtils.name(module))
                 .build()
                 .aggregateOne(DEFAULT_CONTEXT)
                 .map(e -> EntryWrapper.wrap(e.getKey(), (ExerciseBook) e.getValue().get(ExerciseBook.class)));

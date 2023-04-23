@@ -54,7 +54,6 @@ class ExerciseBookAttachImplementalTest extends ServiceTestCase {
         });
     }
 
-
     @Test
     void filterByExerciseBookId() {
         useServiceAutowirer((u, s) -> assertEquals(Filters.eq(ExerciseBookBase.FIELD_NAME_EXERCISE_BOOK_ID, u.getId()),
