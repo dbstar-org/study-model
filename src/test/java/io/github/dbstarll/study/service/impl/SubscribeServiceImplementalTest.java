@@ -110,7 +110,7 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
     }
 
     @Test
-    void entityIdNotSet() {
+    void moduleNotSet() {
         useService(serviceClass, s -> {
             final Subscribe subscribe = EntityFactory.newInstance(entityClass);
             subscribe.setPrincipalId(new ObjectId());
@@ -119,8 +119,23 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             assertNull(s.save(subscribe, validate));
             assertTrue(validate.hasErrors());
             assertTrue(validate.hasFieldErrors());
-            assertEquals(new HashSet<>(Arrays.asList(Subscribe.FIELD_NAME_MODULE, Subscribe.FIELD_NAME_ENTITY_ID)), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_MODULE), validate.getFieldErrors().keySet());
             assertEquals(Collections.singletonList("订阅的模块未设置"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_MODULE));
+        });
+    }
+
+    @Test
+    void entityIdNotSet() {
+        useService(serviceClass, s -> {
+            final Subscribe subscribe = EntityFactory.newInstance(entityClass);
+            subscribe.setPrincipalId(new ObjectId());
+            subscribe.setType(SubscribeType.ENTITY);
+            subscribe.setModule(Module.ENGLISH);
+            final Validate validate = new DefaultValidate();
+            assertNull(s.save(subscribe, validate));
+            assertTrue(validate.hasErrors());
+            assertTrue(validate.hasFieldErrors());
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_ENTITY_ID), validate.getFieldErrors().keySet());
             assertEquals(Collections.singletonList("订阅的实体ID未设置"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_ENTITY_ID));
         });
     }

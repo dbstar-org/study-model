@@ -72,11 +72,9 @@ public final class SubscribeServiceImplemental extends StudyImplementals<Subscri
             private void validateEntitySubscribe(final Subscribe entity, final Validate validate) {
                 if (entity.getModule() == null) {
                     validate.addFieldError(Subscribe.FIELD_NAME_MODULE, "订阅的模块未设置");
-                }
-                if (entity.getEntityId() == null) {
+                } else if (entity.getEntityId() == null) {
                     validate.addFieldError(Subscribe.FIELD_NAME_ENTITY_ID, "订阅的实体ID未设置");
-                }
-                if (entity.getPage() != null) {
+                } else if (entity.getPage() != null) {
                     validate.addFieldError(Subscribe.FIELD_NAME_PAGE, "ENTITY类型的订阅不应设置订阅的页面");
                 }
             }
