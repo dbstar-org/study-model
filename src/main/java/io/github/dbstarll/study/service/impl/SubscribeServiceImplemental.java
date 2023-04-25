@@ -34,24 +34,28 @@ public final class SubscribeServiceImplemental extends StudyImplementals<Subscri
             @Override
             public void validate(final Subscribe entity, final Subscribe original, final Validate validate) {
                 if (original != null) {
-                    if (!Objects.equals(entity.getType(), original.getType())) {
-                        validate.addFieldError(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE, "订阅类型后不得修改");
-                    }
-                    if (!Objects.equals(entity.getModule(), original.getModule())) {
-                        validate.addFieldError(Subscribe.FIELD_NAME_MODULE, "订阅的模块设置后不得修改");
-                    }
-                    if (!Objects.equals(entity.getPage(), original.getPage())) {
-                        validate.addFieldError(Subscribe.FIELD_NAME_PAGE, "订阅的页面设置后不得修改");
-                    }
-                    if (!Objects.equals(entity.getEntityId(), original.getEntityId())) {
-                        validate.addFieldError(Subscribe.FIELD_NAME_ENTITY_ID, "订阅的实体ID设置后不得修改");
-                    }
+                    validateNotChange(entity, original, validate);
                 } else if (entity.getType() == null) {
                     validate.addFieldError(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE, "订阅类型未设置");
                 } else if (entity.getType() == SubscribeType.PAGE) {
                     validatePageSubscribe(entity, validate);
                 } else {
                     validateEntitySubscribe(entity, validate);
+                }
+            }
+
+            private void validateNotChange(final Subscribe entity, final Subscribe original, final Validate validate) {
+                if (!Objects.equals(entity.getType(), original.getType())) {
+                    validate.addFieldError(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE, "订阅类型后不得修改");
+                }
+                if (!Objects.equals(entity.getModule(), original.getModule())) {
+                    validate.addFieldError(Subscribe.FIELD_NAME_MODULE, "订阅的模块设置后不得修改");
+                }
+                if (!Objects.equals(entity.getPage(), original.getPage())) {
+                    validate.addFieldError(Subscribe.FIELD_NAME_PAGE, "订阅的页面设置后不得修改");
+                }
+                if (!Objects.equals(entity.getEntityId(), original.getEntityId())) {
+                    validate.addFieldError(Subscribe.FIELD_NAME_ENTITY_ID, "订阅的实体ID设置后不得修改");
                 }
             }
 
