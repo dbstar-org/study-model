@@ -41,6 +41,17 @@ public final class Exchange implements Base {
     }
 
     /**
+     * 构造Exchange.
+     *
+     * @param word     词态变化后的词
+     * @param classify 词态变化的分类
+     */
+    public Exchange(final String word, final String classify) {
+        setWord(word);
+        setClassify(classify);
+    }
+
+    /**
      * 获得词态变化类型.
      *
      * @return 词态变化类型

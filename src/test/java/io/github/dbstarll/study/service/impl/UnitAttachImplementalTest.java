@@ -8,9 +8,11 @@ import io.github.dbstarll.dubai.model.service.ImplementalAutowirer;
 import io.github.dbstarll.dubai.model.service.ServiceTestCase;
 import io.github.dbstarll.dubai.model.service.validate.DefaultValidate;
 import io.github.dbstarll.dubai.model.service.validate.Validate;
+import io.github.dbstarll.study.entity.Book;
 import io.github.dbstarll.study.entity.TestUnitEntity;
 import io.github.dbstarll.study.entity.Unit;
 import io.github.dbstarll.study.entity.join.UnitBase;
+import io.github.dbstarll.study.service.BookService;
 import io.github.dbstarll.study.service.TestUnitService;
 import io.github.dbstarll.study.service.UnitService;
 import org.bson.types.ObjectId;
@@ -38,19 +40,32 @@ class UnitAttachImplementalTest extends ServiceTestCase {
     }
 
     private void useServiceAutowirer(final BiConsumer<Unit, TestUnitService> consumer) {
-        useService(UnitService.class, us -> {
-            final Unit unit = EntityFactory.newInstance(Unit.class);
-            unit.setBookId(new ObjectId());
-            assertSame(unit, us.save(unit, null));
+        useService(BookService.class, bookService -> {
+            final Book book = EntityFactory.newInstance(Book.class);
+            book.setName("课本");
+            assertSame(book, bookService.save(book, null));
 
-            useService(serviceClass, new ImplementalAutowirer() {
+            useService(UnitService.class, new ImplementalAutowirer() {
                 @Override
                 public <I extends Implemental> void autowire(I i) throws AutowireException {
-                    if (i instanceof UnitAttachImplemental) {
-                        ((UnitAttachImplemental<?, ?>) i).setUnitService(us);
+                    if (i instanceof BookAttachImplemental) {
+                        ((BookAttachImplemental<?, ?>) i).setBookService(bookService);
                     }
                 }
-            }, s -> consumer.accept(unit, s));
+            }, unitService -> {
+                final Unit unit = EntityFactory.newInstance(Unit.class);
+                unit.setBookId(book.getId());
+                assertSame(unit, unitService.save(unit, null));
+
+                useService(serviceClass, new ImplementalAutowirer() {
+                    @Override
+                    public <I extends Implemental> void autowire(I i) throws AutowireException {
+                        if (i instanceof UnitAttachImplemental) {
+                            ((UnitAttachImplemental<?, ?>) i).setUnitService(unitService);
+                        }
+                    }
+                }, s -> consumer.accept(unit, s));
+            });
         });
     }
 

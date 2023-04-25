@@ -16,33 +16,33 @@ import java.util.Map.Entry;
 @Implementation(UnitAttachImplemental.class)
 public interface UnitAttach<E extends StudyEntities & UnitBase> extends StudyAttachs {
     /**
-     * 按unitId来过滤.
+     * 按单元Id来过滤.
      *
-     * @param unitId unitId
+     * @param unitId 单元Id
      * @return 过滤条件
      */
     Bson filterByUnitId(ObjectId unitId);
 
     /**
-     * 按unitId来统计匹配的实体数量.
+     * 按单元Id来统计匹配的实体数量.
      *
-     * @param unitId unitId
+     * @param unitId 单元Id
      * @return 匹配的实体数量
      */
     long countByUnitId(ObjectId unitId);
 
     /**
-     * 按unitId来查询匹配的实体列表.
+     * 按单元Id来查询匹配的实体列表.
      *
-     * @param unitId unitId
+     * @param unitId 单元Id
      * @return 匹配的实体列表
      */
     FindIterable<E> findByUnitId(ObjectId unitId);
 
     /**
-     * 按unitId来删除所有匹配的实体.
+     * 按单元Id来删除所有匹配的实体.
      *
-     * @param unitId unitId
+     * @param unitId 单元Id
      * @return 删除结果
      */
     DeleteResult deleteByUnitId(ObjectId unitId);
