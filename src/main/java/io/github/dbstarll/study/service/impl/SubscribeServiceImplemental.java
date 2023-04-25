@@ -47,14 +47,11 @@ public final class SubscribeServiceImplemental extends StudyImplementals<Subscri
             private void validateNotChange(final Subscribe entity, final Subscribe original, final Validate validate) {
                 if (!Objects.equals(entity.getType(), original.getType())) {
                     validate.addFieldError(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE, "订阅类型后不得修改");
-                }
-                if (!Objects.equals(entity.getModule(), original.getModule())) {
+                } else if (!Objects.equals(entity.getModule(), original.getModule())) {
                     validate.addFieldError(Subscribe.FIELD_NAME_MODULE, "订阅的模块设置后不得修改");
-                }
-                if (!Objects.equals(entity.getPage(), original.getPage())) {
+                } else if (!Objects.equals(entity.getPage(), original.getPage())) {
                     validate.addFieldError(Subscribe.FIELD_NAME_PAGE, "订阅的页面设置后不得修改");
-                }
-                if (!Objects.equals(entity.getEntityId(), original.getEntityId())) {
+                } else if (!Objects.equals(entity.getEntityId(), original.getEntityId())) {
                     validate.addFieldError(Subscribe.FIELD_NAME_ENTITY_ID, "订阅的实体ID设置后不得修改");
                 }
             }

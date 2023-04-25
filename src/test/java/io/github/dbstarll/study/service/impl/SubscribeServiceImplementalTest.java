@@ -13,9 +13,7 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -89,23 +87,33 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             assertSame(subscribe, s.save(subscribe, null));
             assertSame(Module.ENGLISH, subscribe.getModule());
 
-            final Validate validate = new DefaultValidate();
-            assertNull(s.save(subscribe, null));
+            Validate validate = new DefaultValidate();
+            assertNull(s.save(subscribe, validate));
             assertFalse(validate.hasErrors());
 
-            subscribe.setType(SubscribeType.ENTITY);
-            subscribe.setModule(Module.CHINESE);
-            subscribe.setPage(Page.USER);
             subscribe.setEntityId(new ObjectId());
+            validate = new DefaultValidate();
             assertNull(s.save(subscribe, validate));
-            assertTrue(validate.hasErrors());
-            assertTrue(validate.hasFieldErrors());
-            assertEquals(new HashSet<>(Arrays.asList(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE, Subscribe.FIELD_NAME_MODULE,
-                    Subscribe.FIELD_NAME_PAGE, Subscribe.FIELD_NAME_ENTITY_ID)), validate.getFieldErrors().keySet());
-            assertEquals(Collections.singletonList("订阅类型后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE));
-            assertEquals(Collections.singletonList("订阅的模块设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_MODULE));
-            assertEquals(Collections.singletonList("订阅的页面设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_PAGE));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_ENTITY_ID), validate.getFieldErrors().keySet());
             assertEquals(Collections.singletonList("订阅的实体ID设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_ENTITY_ID));
+
+            subscribe.setPage(Page.USER);
+            validate = new DefaultValidate();
+            assertNull(s.save(subscribe, validate));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_PAGE), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅的页面设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_PAGE));
+
+            subscribe.setModule(Module.CHINESE);
+            validate = new DefaultValidate();
+            assertNull(s.save(subscribe, validate));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_MODULE), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅的模块设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_MODULE));
+
+            subscribe.setType(SubscribeType.ENTITY);
+            validate = new DefaultValidate();
+            assertNull(s.save(subscribe, validate));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅类型后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE));
         });
     }
 
@@ -168,23 +176,34 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             subscribe.setEntityId(new ObjectId());
             assertSame(subscribe, s.save(subscribe, null));
 
-            final Validate validate = new DefaultValidate();
-            assertNull(s.save(subscribe, null));
+            Validate validate = new DefaultValidate();
+            assertNull(s.save(subscribe, validate));
             assertFalse(validate.hasErrors());
 
-            subscribe.setType(SubscribeType.PAGE);
-            subscribe.setModule(Module.MATH);
-            subscribe.setPage(Page.USER);
             subscribe.setEntityId(new ObjectId());
+            validate = new DefaultValidate();
             assertNull(s.save(subscribe, validate));
-            assertTrue(validate.hasErrors());
-            assertTrue(validate.hasFieldErrors());
-            assertEquals(new HashSet<>(Arrays.asList(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE, Subscribe.FIELD_NAME_MODULE,
-                    Subscribe.FIELD_NAME_PAGE, Subscribe.FIELD_NAME_ENTITY_ID)), validate.getFieldErrors().keySet());
-            assertEquals(Collections.singletonList("订阅类型后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE));
-            assertEquals(Collections.singletonList("订阅的模块设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_MODULE));
-            assertEquals(Collections.singletonList("订阅的页面设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_PAGE));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_ENTITY_ID), validate.getFieldErrors().keySet());
             assertEquals(Collections.singletonList("订阅的实体ID设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_ENTITY_ID));
+
+            subscribe.setPage(Page.USER);
+            validate = new DefaultValidate();
+            assertNull(s.save(subscribe, validate));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_PAGE), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅的页面设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_PAGE));
+
+
+            subscribe.setModule(Module.MATH);
+            validate = new DefaultValidate();
+            assertNull(s.save(subscribe, validate));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_MODULE), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅的模块设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_MODULE));
+
+            subscribe.setType(SubscribeType.PAGE);
+            validate = new DefaultValidate();
+            assertNull(s.save(subscribe, validate));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅类型后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE));
         });
     }
 }
