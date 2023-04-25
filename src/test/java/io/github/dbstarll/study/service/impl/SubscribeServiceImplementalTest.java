@@ -41,8 +41,8 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             assertNull(s.save(subscribe, validate));
             assertTrue(validate.hasErrors());
             assertTrue(validate.hasFieldErrors());
-            assertEquals(Collections.singleton("type"), validate.getFieldErrors().keySet());
-            assertEquals(Collections.singletonList("订阅类型未设置"), validate.getFieldErrors().get("type"));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅类型未设置"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE));
         });
     }
 
@@ -56,8 +56,8 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             assertNull(s.save(subscribe, validate));
             assertTrue(validate.hasErrors());
             assertTrue(validate.hasFieldErrors());
-            assertEquals(Collections.singleton("page"), validate.getFieldErrors().keySet());
-            assertEquals(Collections.singletonList("订阅的页面未设置"), validate.getFieldErrors().get("page"));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_PAGE), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅的页面未设置"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_PAGE));
         });
     }
 
@@ -73,8 +73,8 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             assertNull(s.save(subscribe, validate));
             assertTrue(validate.hasErrors());
             assertTrue(validate.hasFieldErrors());
-            assertEquals(Collections.singleton("entityId"), validate.getFieldErrors().keySet());
-            assertEquals(Collections.singletonList("PAGE类型的订阅不应设置订阅的实体ID"), validate.getFieldErrors().get("entityId"));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_ENTITY_ID), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("PAGE类型的订阅不应设置订阅的实体ID"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_ENTITY_ID));
         });
     }
 
@@ -100,11 +100,12 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             assertNull(s.save(subscribe, validate));
             assertTrue(validate.hasErrors());
             assertTrue(validate.hasFieldErrors());
-            assertEquals(new HashSet<>(Arrays.asList("type", "module", "page", "entityId")), validate.getFieldErrors().keySet());
-            assertEquals(Collections.singletonList("订阅类型后不得修改"), validate.getFieldErrors().get("type"));
-            assertEquals(Collections.singletonList("订阅的模块设置后不得修改"), validate.getFieldErrors().get("module"));
-            assertEquals(Collections.singletonList("订阅的页面设置后不得修改"), validate.getFieldErrors().get("page"));
-            assertEquals(Collections.singletonList("订阅的实体ID设置后不得修改"), validate.getFieldErrors().get("entityId"));
+            assertEquals(new HashSet<>(Arrays.asList(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE, Subscribe.FIELD_NAME_MODULE,
+                    Subscribe.FIELD_NAME_PAGE, Subscribe.FIELD_NAME_ENTITY_ID)), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅类型后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE));
+            assertEquals(Collections.singletonList("订阅的模块设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_MODULE));
+            assertEquals(Collections.singletonList("订阅的页面设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_PAGE));
+            assertEquals(Collections.singletonList("订阅的实体ID设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_ENTITY_ID));
         });
     }
 
@@ -118,9 +119,9 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             assertNull(s.save(subscribe, validate));
             assertTrue(validate.hasErrors());
             assertTrue(validate.hasFieldErrors());
-            assertEquals(new HashSet<>(Arrays.asList("module", "entityId")), validate.getFieldErrors().keySet());
-            assertEquals(Collections.singletonList("订阅的模块未设置"), validate.getFieldErrors().get("module"));
-            assertEquals(Collections.singletonList("订阅的实体ID未设置"), validate.getFieldErrors().get("entityId"));
+            assertEquals(new HashSet<>(Arrays.asList(Subscribe.FIELD_NAME_MODULE, Subscribe.FIELD_NAME_ENTITY_ID)), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅的模块未设置"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_MODULE));
+            assertEquals(Collections.singletonList("订阅的实体ID未设置"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_ENTITY_ID));
         });
     }
 
@@ -137,8 +138,8 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             assertNull(s.save(subscribe, validate));
             assertTrue(validate.hasErrors());
             assertTrue(validate.hasFieldErrors());
-            assertEquals(Collections.singleton("page"), validate.getFieldErrors().keySet());
-            assertEquals(Collections.singletonList("ENTITY类型的订阅不应设置订阅的页面"), validate.getFieldErrors().get("page"));
+            assertEquals(Collections.singleton(Subscribe.FIELD_NAME_PAGE), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("ENTITY类型的订阅不应设置订阅的页面"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_PAGE));
         });
     }
 
@@ -163,11 +164,12 @@ class SubscribeServiceImplementalTest extends ServiceTestCase {
             assertNull(s.save(subscribe, validate));
             assertTrue(validate.hasErrors());
             assertTrue(validate.hasFieldErrors());
-            assertEquals(new HashSet<>(Arrays.asList("type", "module", "page", "entityId")), validate.getFieldErrors().keySet());
-            assertEquals(Collections.singletonList("订阅类型后不得修改"), validate.getFieldErrors().get("type"));
-            assertEquals(Collections.singletonList("订阅的模块设置后不得修改"), validate.getFieldErrors().get("module"));
-            assertEquals(Collections.singletonList("订阅的页面设置后不得修改"), validate.getFieldErrors().get("page"));
-            assertEquals(Collections.singletonList("订阅的实体ID设置后不得修改"), validate.getFieldErrors().get("entityId"));
+            assertEquals(new HashSet<>(Arrays.asList(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE, Subscribe.FIELD_NAME_MODULE,
+                    Subscribe.FIELD_NAME_PAGE, Subscribe.FIELD_NAME_ENTITY_ID)), validate.getFieldErrors().keySet());
+            assertEquals(Collections.singletonList("订阅类型后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_SUBSCRIBE_TYPE));
+            assertEquals(Collections.singletonList("订阅的模块设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_MODULE));
+            assertEquals(Collections.singletonList("订阅的页面设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_PAGE));
+            assertEquals(Collections.singletonList("订阅的实体ID设置后不得修改"), validate.getFieldErrors().get(Subscribe.FIELD_NAME_ENTITY_ID));
         });
     }
 }

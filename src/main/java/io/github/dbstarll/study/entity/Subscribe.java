@@ -12,6 +12,11 @@ import java.util.Date;
 
 @Table
 public interface Subscribe extends StudyEntities, Cacheable, PrincipalBase {
+    String FIELD_NAME_SUBSCRIBE_TYPE = "type";
+    String FIELD_NAME_MODULE = "module";
+    String FIELD_NAME_PAGE = "page";
+    String FIELD_NAME_ENTITY_ID = "entityId";
+
     /**
      * 获得订阅类型.
      *
