@@ -8,31 +8,12 @@ import java.util.Set;
 
 @EnumValue(method = "toString")
 public enum Page {
-    // ENGLISH
-    // word("word",Module.ENGLISH),
-
     BOOK("book", Module.ENGLISH),
-
     EXERCISE_BOOK("exercise_book", Module.ENGLISH, Mode.USER),
-
     SPELL("spell", Module.ENGLISH, Mode.USER, Mode.GUEST),
-
     SPELL_EXCHANGE("spell_exchange", Module.ENGLISH, Mode.USER),
 
-    // listen(Module.ENGLISH, Mode.USER),
-
-    // read(Module.ENGLISH, Mode.USER),
-
-    // MATH
-    // custom(Module.MATH, Mode.USER),
-
-    // mix(Module.MATH, Mode.USER, Mode.GUEST),
-
-    // SETTING
-
     USER("user", Module.SETTING);
-
-    // approve(Module.SETTING);
 
     private final String name;
     private final Module module;
@@ -60,7 +41,7 @@ public enum Page {
      * @return 是否能访问page
      */
     public boolean allowMode(final Mode mode) {
-        return modes.contains(mode);
+        return mode == Mode.ADMIN || modes.contains(mode);
     }
 
     @Override
