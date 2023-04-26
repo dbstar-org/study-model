@@ -1,5 +1,6 @@
 package io.github.dbstarll.study.service.impl;
 
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
@@ -7,8 +8,11 @@ import com.mongodb.client.model.Variable;
 import io.github.dbstarll.dubai.model.collection.Collection;
 import io.github.dbstarll.dubai.model.entity.Entity;
 import io.github.dbstarll.dubai.model.entity.EntityFactory;
+import io.github.dbstarll.dubai.model.entity.EntityFactory.PojoFields;
 import io.github.dbstarll.dubai.model.entity.Table;
 import io.github.dbstarll.dubai.model.entity.info.Namable;
+import io.github.dbstarll.dubai.model.service.Aggregator;
+import io.github.dbstarll.dubai.model.service.Service;
 import io.github.dbstarll.dubai.model.service.validate.Validate;
 import io.github.dbstarll.dubai.model.service.validation.Validation;
 import io.github.dbstarll.study.entity.Voice;
@@ -18,10 +22,7 @@ import io.github.dbstarll.study.entity.join.WordBase;
 import io.github.dbstarll.study.service.VoiceService;
 import io.github.dbstarll.study.service.WordService;
 import io.github.dbstarll.study.service.attach.WordServiceAttach;
-import io.github.dbstarll.utils.lang.wrapper.IterableWrapper;
-import io.github.dbstarll.utils.lang.wrapper.IteratorWrapper;
 import org.apache.commons.collections.CollectionUtils;
-import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
@@ -30,7 +31,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -47,7 +47,7 @@ public final class WordServiceImplemental extends StudyImplementals<Word, WordSe
     private static final Bson MATCH_WORD_ID = Filters.expr(
             Filters.eq("$eq",
                     Arrays.asList("$" + WordBase.FIELD_NAME_WORD_ID, "$$" + WordBase.FIELD_NAME_WORD_ID)));
-    private static final Bson PROJECTION_WORD = Aggregates.project(Projections.exclude("dateCreated", "lastModified"));
+    private static final Bson PROJECTION_WORD = Projections.exclude("dateCreated", "lastModified");
     private static final Bson PROJECTION_JOIN_WORD = Aggregates.project(Projections.include(Entity.FIELD_NAME_ID));
 
     private VoiceService voiceService;
@@ -106,31 +106,21 @@ public final class WordServiceImplemental extends StudyImplementals<Word, WordSe
     }
 
     @Override
-    public Iterable<WordWithJoin> findWithJoin(final Bson filter, final String joinTable, final String joinField,
-                                               final ObjectId joinId,
-                                               final Supplier<java.util.Collection<Bson>> query) {
-        final List<Bson> pipeline = new LinkedList<>();
-        if (filter != null) {
-            pipeline.add(Aggregates.match(filter));
-        }
-        pipeline.addAll(query.get());
-        pipeline.add(PROJECTION_WORD);
-        pipeline.add(joinLookup(joinTable, joinField, joinId));
-        return IterableWrapper.wrap(new IteratorWrapper<WordWithJoin, WordWithJoin>(
-                getCollection().aggregate(pipeline, WordWithJoin.class).iterator()) {
-            @Override
-            protected WordWithJoin next(final WordWithJoin entity) {
-                entity.setJoin(!CollectionUtils.isEmpty(entity.getJoins()));
-                entity.setJoins(null);
-                return entity;
-            }
-        });
-    }
-
-    private Bson joinLookup(final String joinTable, final String joinField, final ObjectId joinId) {
-        final Bson matchJoinId = Filters.eq(joinField, joinId);
-        final Bson match = Aggregates.match(Filters.and(matchJoinId, MATCH_WORD_ID));
-        return Aggregates.lookup(joinTable, LET_WORD_ID, Arrays.asList(match, PROJECTION_JOIN_WORD), "joins");
+    public <E1 extends Entity, S1 extends Service<E1>> MongoIterable<WordWithJoin> findWithJoin(
+            final Bson filter, final S1 joinService, final String joinField, final ObjectId joinId) {
+        final Bson match = Aggregates.match(Filters.and(Filters.eq(joinField, joinId), MATCH_WORD_ID));
+        return Aggregator.builder(service, getCollection())
+                .match(aggregateMatchFilter(filter))
+                .project(PROJECTION_WORD)
+                .join(joinService, LET_WORD_ID, Arrays.asList(match, PROJECTION_JOIN_WORD))
+                .build()
+                .joinOne(DEFAULT_CONTEXT)
+                .map(t -> {
+                    final WordWithJoin wordWithJoin = EntityFactory.newInstance(WordWithJoin.class,
+                            ((PojoFields) t.getKey()).fields());
+                    wordWithJoin.setJoin(t.getValue().containsKey(joinService.getEntityClass()));
+                    return wordWithJoin;
+                });
     }
 
     private Pattern getPattern(final String word) {
@@ -172,20 +162,6 @@ public final class WordServiceImplemental extends StudyImplementals<Word, WordSe
 
     @Table
     public interface WordWithJoin extends Word {
-        /**
-         * 获得外部join的文档列表.
-         *
-         * @return 外部join的文档列表
-         */
-        List<Document> getJoins();
-
-        /**
-         * 设置外部join的文档列表.
-         *
-         * @param joins 外部join的文档列表
-         */
-        void setJoins(List<Document> joins);
-
         /**
          * 获得是否存在join.
          *
