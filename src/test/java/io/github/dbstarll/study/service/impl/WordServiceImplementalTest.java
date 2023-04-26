@@ -19,6 +19,7 @@ import io.github.dbstarll.study.entity.ext.Phonetic;
 import io.github.dbstarll.study.entity.join.UnitBase;
 import io.github.dbstarll.study.entity.join.WordBase;
 import io.github.dbstarll.study.service.TestWordService;
+import io.github.dbstarll.study.service.UnitWordService;
 import io.github.dbstarll.study.service.VoiceService;
 import io.github.dbstarll.study.service.WordService;
 import org.bson.conversions.Bson;
@@ -126,9 +127,11 @@ class WordServiceImplementalTest extends ServiceTestCase {
             word.setCri(true);
             assertSame(word, wordService.save(word, null));
 
-            final ObjectId unitId = new ObjectId();
-            wordService.findWithJoin(null, "unit_word", UnitBase.FIELD_NAME_UNIT_ID, unitId, Collections::emptyList)
-                    .forEach(w -> assertFalse(w.isJoin()));
+            useService(UnitWordService.class, uws -> {
+                final ObjectId unitId = new ObjectId();
+                wordService.findWithJoin(null, uws, UnitBase.FIELD_NAME_UNIT_ID, unitId)
+                        .forEach(w -> assertFalse(w.isJoin()));
+            });
 
             useService(TestWordService.class, new ImplementalAutowirer() {
                 @Override
@@ -143,7 +146,7 @@ class WordServiceImplementalTest extends ServiceTestCase {
                 assertSame(testWord, s.save(testWord, null));
 
                 final Bson filter = wordService.filterByWord("word", false, false);
-                wordService.findWithJoin(filter, "test_word_entity", Entity.FIELD_NAME_ID, testWord.getId(), Collections::emptyList)
+                wordService.findWithJoin(filter, s, Entity.FIELD_NAME_ID, testWord.getId())
                         .forEach(w -> assertTrue(w.isJoin()));
             });
         });

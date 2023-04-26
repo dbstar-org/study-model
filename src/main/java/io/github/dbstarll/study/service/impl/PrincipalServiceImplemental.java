@@ -52,7 +52,7 @@ public final class PrincipalServiceImplemental extends StudyImplementals<Princip
                 .match(aggregateMatchFilter(filter))
                 .join(exerciseBookService, Sourceable.FIELD_NAME_SOURCES + '.' + EnumUtils.name(module))
                 .build()
-                .aggregateOne(DEFAULT_CONTEXT)
+                .joinOne(DEFAULT_CONTEXT)
                 .map(e -> EntryWrapper.wrap(e.getKey(), (ExerciseBook) e.getValue().get(ExerciseBook.class)));
     }
 }

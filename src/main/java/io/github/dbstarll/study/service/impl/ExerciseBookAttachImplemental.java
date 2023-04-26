@@ -77,7 +77,7 @@ public final class ExerciseBookAttachImplemental<E extends StudyEntities & Exerc
                 .match(aggregateMatchFilter(filter))
                 .join(exerciseBookService, ExerciseBookBase.FIELD_NAME_EXERCISE_BOOK_ID)
                 .build()
-                .aggregateOne(DEFAULT_CONTEXT)
+                .joinOne(DEFAULT_CONTEXT)
                 .map(e -> EntryWrapper.wrap(e.getKey(), (ExerciseBook) e.getValue().get(ExerciseBook.class)));
     }
 

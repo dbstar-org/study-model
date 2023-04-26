@@ -2,12 +2,12 @@ package io.github.dbstarll.study.service.impl;
 
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import io.github.dbstarll.dubai.model.collection.Collection;
 import io.github.dbstarll.dubai.model.entity.Entity;
 import io.github.dbstarll.dubai.model.entity.info.Describable;
+import io.github.dbstarll.dubai.model.service.Aggregator;
 import io.github.dbstarll.dubai.model.service.validate.Validate;
 import io.github.dbstarll.dubai.model.service.validation.GeneralValidation;
 import io.github.dbstarll.dubai.model.service.validation.GeneralValidation.Position;
@@ -16,12 +16,10 @@ import io.github.dbstarll.study.entity.Exercise;
 import io.github.dbstarll.study.service.ExerciseService;
 import io.github.dbstarll.study.service.WordService;
 import io.github.dbstarll.study.service.attach.ExerciseServiceAttach;
-import io.github.dbstarll.utils.lang.enums.EnumUtils;
 import io.github.dbstarll.utils.lang.wrapper.EntryWrapper;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import java.util.Arrays;
 import java.util.Map.Entry;
 
 import static org.apache.commons.lang3.Validate.notNull;
@@ -57,19 +55,21 @@ public final class ExerciseServiceImplemental extends StudyImplementals<Exercise
 
     @Override
     public MongoIterable<Entry<String, Integer>> countErrors(final Exercise exercise) {
-        final Bson match = Aggregates.match(Filters.and(
+        final Bson filter = Filters.and(
                 service.filterByExerciseBookId(exercise.getBookId()),
                 service.filterByWordId(exercise.getWordId()),
-                Filters.eq("exerciseKey", EnumUtils.name(exercise.getExerciseKey())),
+                Filters.eq("exerciseKey", exercise.getExerciseKey()),
                 Filters.eq("correct", false),
                 exercise.getExchangeKey() == null
                         ? Filters.exists("exchangeKey", false)
-                        : Filters.eq("exchangeKey", EnumUtils.name(exercise.getExchangeKey()))
-        ));
-        final Bson group = Aggregates.group("$" + Describable.FIELD_NAME_DESCRIPTION, Accumulators.sum(SUM_FIELD, 1));
-        final Bson sort = Aggregates.sort(Sorts.descending(SUM_FIELD));
-
-        return getCollection().aggregate(Arrays.asList(match, group, sort), Document.class)
+                        : Filters.eq("exchangeKey", exercise.getExchangeKey())
+        );
+        return Aggregator.builder(service, getCollection())
+                .match(aggregateMatchFilter(filter))
+                .group("$" + Describable.FIELD_NAME_DESCRIPTION, Accumulators.sum(SUM_FIELD, 1))
+                .sort(Sorts.descending(SUM_FIELD))
+                .build()
+                .aggregate(Document.class)
                 .map(doc -> EntryWrapper.wrap(doc.getString(Entity.FIELD_NAME_ID), doc.getInteger(SUM_FIELD)));
     }
 
