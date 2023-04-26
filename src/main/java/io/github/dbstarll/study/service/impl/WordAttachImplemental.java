@@ -80,7 +80,7 @@ public final class WordAttachImplemental<E extends StudyEntities & WordBase, S e
                 .match(aggregateMatchFilter(filter))
                 .join(wordService, WordBase.FIELD_NAME_WORD_ID)
                 .build()
-                .aggregateOne(DEFAULT_CONTEXT)
+                .joinOne(DEFAULT_CONTEXT)
                 .map(e -> EntryWrapper.wrap(e.getKey(), (Word) e.getValue().get(Word.class)));
     }
 

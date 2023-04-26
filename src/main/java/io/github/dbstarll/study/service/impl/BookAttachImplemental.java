@@ -77,7 +77,7 @@ public final class BookAttachImplemental<E extends StudyEntities & BookBase, S e
                 .match(aggregateMatchFilter(filter))
                 .join(bookService, BookBase.FIELD_NAME_BOOK_ID)
                 .build()
-                .aggregateOne(DEFAULT_CONTEXT)
+                .joinOne(DEFAULT_CONTEXT)
                 .map(e -> EntryWrapper.wrap(e.getKey(), (Book) e.getValue().get(Book.class)));
     }
 

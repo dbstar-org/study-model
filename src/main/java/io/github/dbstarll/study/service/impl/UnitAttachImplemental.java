@@ -77,7 +77,7 @@ public final class UnitAttachImplemental<E extends StudyEntities & UnitBase, S e
                 .match(aggregateMatchFilter(filter))
                 .join(unitService, UnitBase.FIELD_NAME_UNIT_ID)
                 .build()
-                .aggregateOne(DEFAULT_CONTEXT)
+                .joinOne(DEFAULT_CONTEXT)
                 .map(e -> EntryWrapper.wrap(e.getKey(), (Unit) e.getValue().get(Unit.class)));
     }
 
