@@ -2,14 +2,14 @@ package io.github.dbstarll.study.classify.exchange;
 
 import io.github.dbstarll.study.entity.enums.ExchangeKey;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public final class ExchangeUtils {
-    private static final Map<ExchangeKey, ExchangeClassifier> CLASSIFIERS = new HashMap<>();
+    private static final Map<ExchangeKey, ExchangeClassifier> CLASSIFIERS = new EnumMap<>(ExchangeKey.class);
 
     static {
         CLASSIFIERS.put(ExchangeKey.PL, new PlExchangeClassifier());

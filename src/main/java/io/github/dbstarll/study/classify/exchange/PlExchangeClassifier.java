@@ -19,8 +19,6 @@ class PlExchangeClassifier implements ExchangeClassifier {
                 return "ses";
             } else if (word.endsWith("o")) {
                 return "oes";
-            } else {
-                return "irregular";
             }
         } else if (word.endsWith("y") && exchange.equals(word.substring(0, word.length() - 1) + "ies")) {
             return "ies";
@@ -30,8 +28,8 @@ class PlExchangeClassifier implements ExchangeClassifier {
             return "ves";
         } else if (exchange.equals(word)) {
             return "same";
-        } else {
-            return "irregular";
         }
+
+        return "irregular";
     }
 }
