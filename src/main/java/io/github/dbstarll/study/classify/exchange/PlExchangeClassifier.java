@@ -20,16 +20,25 @@ class PlExchangeClassifier implements ExchangeClassifier {
             } else if (word.endsWith("o")) {
                 return "oes";
             }
-        } else if (word.endsWith("y") && exchange.equals(word.substring(0, word.length() - 1) + "ies")) {
+        } else if (match(word, exchange, "y", "ies")) {
             return "ies";
-        } else if (word.endsWith("f") && exchange.equals(word.substring(0, word.length() - 1) + "ves")) {
+        } else if (match(word, exchange, "f", "ves")) {
             return "ves";
-        } else if (word.endsWith("fe") && exchange.equals(word.substring(0, word.length() - 2) + "ves")) {
+        } else if (match(word, exchange, "fe", "ves")) {
             return "ves";
         } else if (exchange.equals(word)) {
             return "same";
         }
 
         return "irregular";
+    }
+
+    private boolean match(final String word, final String exchange, final String endsWith, final String suffix) {
+        if (word.endsWith(endsWith)) {
+            final String wordIntercepted = word.substring(0, word.length() - endsWith.length());
+            return exchange.equals(wordIntercepted + suffix);
+        } else {
+            return false;
+        }
     }
 }
